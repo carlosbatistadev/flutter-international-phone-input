@@ -107,11 +107,13 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
 
       if (widget.initialSelection != null) {
         preSelectedItem = list.firstWhere(
-            (e) =>
-                (e!.code!.toUpperCase() ==
-                    widget.initialSelection!.toUpperCase()) ||
-                (e.dialCode == widget.initialSelection.toString()),
-            orElse: () => list[0]);
+          (e) {
+            return (e.code?.toUpperCase() ==
+                    widget.initialSelection?.toUpperCase()) ||
+                (e.dialCode == widget.initialSelection.toString());
+          },
+          orElse: () => list[0],
+        );
       } else {
         preSelectedItem = list[0];
       }
@@ -151,33 +153,33 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
     }
   }
 
-  Future<List<Country?>> _fetchCountryData() async {
+  Future<List<Country>> _fetchCountryData() async {
     var list = await DefaultAssetBundle.of(context)
         .loadString('packages/international_phone_input/assets/countries.json');
     List<dynamic> jsonList = json.decode(list);
 
-    List<Country?> countries =
-        List<Country?>.generate(jsonList.length, (index) {
+    List<Country> countries = [];
+    for (int index = 0; index < jsonList.length; index++) {
       Map<String, String> elem = Map<String, String>.from(jsonList[index]);
       if (widget.enabledCountries.isEmpty) {
-        return Country(
+        countries.add(
+          Country(
             name: elem['en_short_name'],
             code: elem['alpha_2_code'],
             dialCode: elem['dial_code'],
-            flagUri: 'assets/flags/${elem['alpha_2_code']!.toLowerCase()}.png');
+            flagUri: 'assets/flags/${elem['alpha_2_code']!.toLowerCase()}.png',
+          ),
+        );
       } else if (widget.enabledCountries.contains(elem['alpha_2_code']) ||
           widget.enabledCountries.contains(elem['dial_code'])) {
-        return Country(
-            name: elem['en_short_name'],
-            code: elem['alpha_2_code'],
-            dialCode: elem['dial_code'],
-            flagUri: 'assets/flags/${elem['alpha_2_code']!.toLowerCase()}.png');
-      } else {
-        return null;
+        countries.add(Country(
+          name: elem['en_short_name'],
+          code: elem['alpha_2_code'],
+          dialCode: elem['dial_code'],
+          flagUri: 'assets/flags/${elem['alpha_2_code']!.toLowerCase()}.png',
+        ));
       }
-    });
-
-    countries.removeWhere((value) => value == null);
+    }
 
     return countries;
   }
