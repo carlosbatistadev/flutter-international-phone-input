@@ -22,13 +22,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String phoneNumber;
-  String phoneIsoCode;
+  String? phoneNumber;
+  String? phoneIsoCode;
   bool visible = false;
   String confirmedNumber = '';
 
   void onPhoneNumberChange(
-      String number, String internationalizedPhoneNumber, String isoCode) {
+    String number,
+    String? internationalizedPhoneNumber,
+    String? isoCode,
+    String? dialCode,
+  ) {
     print(number);
     setState(() {
       phoneNumber = number;
@@ -37,7 +41,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onValidPhoneNumber(
-      String number, String internationalizedPhoneNumber, String isoCode) {
+    String number,
+    String internationalizedPhoneNumber,
+    String? isoCode,
+  ) {
     setState(() {
       visible = true;
       confirmedNumber = internationalizedPhoneNumber;
