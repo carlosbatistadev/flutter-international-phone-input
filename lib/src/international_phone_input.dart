@@ -129,7 +129,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
 
   _validatePhoneNumber() {
     String phoneText = phoneTextController.text;
-    if (phoneText.isNotEmpty) {
+    if (phoneText.isNotEmpty && selectedItem != null) {
       PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!)
           .then((isValid) {
         setState(() {
