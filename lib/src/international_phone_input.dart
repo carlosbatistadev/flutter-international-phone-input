@@ -31,6 +31,7 @@ class InternationalPhoneInput extends StatefulWidget {
   final bool showCountryFlags;
   final Widget? dropdownIcon;
   final InputBorder? border;
+  final List<TextInputFormatter>? inputFormatters;
 
   InternationalPhoneInput({
     this.onPhoneNumberChange,
@@ -43,6 +44,7 @@ class InternationalPhoneInput extends StatefulWidget {
     this.hintStyle,
     this.labelStyle,
     this.enabledCountries = const [],
+    this.inputFormatters,
     this.errorMaxLines,
     this.decoration,
     this.showCountryCodes = true,
@@ -100,6 +102,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
     showCountryCodes = widget.showCountryCodes;
     showCountryFlags = widget.showCountryFlags;
     dropdownIcon = widget.dropdownIcon;
+    inputFormatters = widget.inputFormatters;
 
     phoneTextController.addListener(_validatePhoneNumber);
     phoneTextController.text = widget.initialPhoneNumber ?? '';
