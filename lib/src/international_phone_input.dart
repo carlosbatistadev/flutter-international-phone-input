@@ -81,7 +81,6 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
   late bool showCountryFlags;
 
   InputDecoration? decoration;
-  List<TextInputFormatter>? inputFormatters;
   Widget? dropdownIcon;
   InputBorder? border;
 
@@ -102,7 +101,6 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
     showCountryCodes = widget.showCountryCodes;
     showCountryFlags = widget.showCountryFlags;
     dropdownIcon = widget.dropdownIcon;
-    inputFormatters = widget.inputFormatters;
 
     phoneTextController.addListener(_validatePhoneNumber);
     phoneTextController.text = widget.initialPhoneNumber ?? '';
@@ -243,7 +241,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
             child: TextField(
               keyboardType: TextInputType.phone,
               controller: phoneTextController,
-              inputFormatters: inputFormatters,
+              inputFormatters: widget.inputFormatters,
               decoration: decoration ??
                   InputDecoration(
                     hintText: hintText,
