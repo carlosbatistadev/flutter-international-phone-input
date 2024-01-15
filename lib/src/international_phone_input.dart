@@ -16,7 +16,6 @@ class InternationalPhoneInput extends StatefulWidget {
     String? isoCode,
     String? dialCode,
   )? onPhoneNumberChange;
-  final TextEditingController? phoneTextController;
   final String? initialPhoneNumber;
   final String? initialSelection;
   final String? errorText;
@@ -33,7 +32,6 @@ class InternationalPhoneInput extends StatefulWidget {
   final Widget? dropdownIcon;
   final InputBorder? border;
   final List<TextInputFormatter>? inputFormatters;
-  final String? Function(String?)? validator;
 
   InternationalPhoneInput({
     this.onPhoneNumberChange,
@@ -53,8 +51,6 @@ class InternationalPhoneInput extends StatefulWidget {
     this.showCountryFlags = true,
     this.dropdownIcon,
     this.border,
-    this.phoneTextController,
-    this.validator,
   });
 
   static Future<String?> internationalizeNumber(String number, String iso) {
@@ -90,6 +86,8 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
 
   _InternationalPhoneInputState();
 
+  final phoneTextController = TextEditingController();
+
   @override
   void initState() {
     errorText = widget.errorText ?? 'Please enter a valid phone number';
@@ -104,8 +102,8 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
     showCountryFlags = widget.showCountryFlags;
     dropdownIcon = widget.dropdownIcon;
 
-    widget.phoneTextController?.addListener(_validatePhoneNumber);
-    widget.phoneTextController?.text = widget.initialPhoneNumber ?? '';
+    phoneTextController.addListener(_validatePhoneNumber);
+    phoneTextController.text = widget.initialPhoneNumber ?? '';
 
     _fetchCountryData().then((list) {
       Country? preSelectedItem;
@@ -133,28 +131,34 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
   }
 
   _validatePhoneNumber() {
-    String phoneText = widget.phoneTextController?.text ?? "";
+    String phoneText = phoneTextController.text;
     if (phoneText.isNotEmpty && selectedItem != null) {
-      PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!)
-          .then((isValid) {
-        setState(() {
-          hasError = !isValid!;
-        });
+      PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!).then(
+        (isValid) async {
+          setState(() {
+            hasError = !isValid!;
+          });
 
-        if (widget.onPhoneNumberChange != null) {
-          if (isValid!) {
-            PhoneService.getNormalizedPhoneNumber(
-                    phoneText, selectedItem!.code!)
-                .then((number) {
-              widget.onPhoneNumberChange!(phoneText, number, selectedItem!.code,
-                  selectedItem!.dialCode);
-            });
-          } else {
+          if (widget.onPhoneNumberChange != null) {
+            var number = "";
+
+            if (isValid!) {
+              number = await PhoneService.getNormalizedPhoneNumber(
+                    phoneText,
+                    selectedItem!.code!,
+                  ) ??
+                  "";
+            }
+
             widget.onPhoneNumberChange!(
-                '', '', selectedItem!.code, selectedItem!.dialCode);
+              phoneText,
+              number,
+              selectedItem!.code,
+              selectedItem!.dialCode,
+            );
           }
-        }
-      });
+        },
+      );
     }
   }
 
@@ -240,16 +244,15 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
             ),
           ),
           Flexible(
-            child: TextFormField(
-              autovalidateMode: AutovalidateMode.always,
+            child: TextField(
               keyboardType: TextInputType.phone,
-              controller: widget.phoneTextController,
+              controller: phoneTextController,
               inputFormatters: widget.inputFormatters,
-              validator: widget.validator,
               decoration: decoration ??
                   InputDecoration(
                     hintText: hintText,
                     labelText: labelText,
+                    errorText: hasError ? errorText : null,
                     hintStyle: hintStyle ?? null,
                     errorStyle: errorStyle ?? null,
                     labelStyle: labelStyle,
