@@ -16,6 +16,7 @@ class InternationalPhoneInput extends StatefulWidget {
     String? isoCode,
     String? dialCode,
   )? onPhoneNumberChange;
+  final TextEditingController? phoneTextController;
   final String? initialPhoneNumber;
   final String? initialSelection;
   final String? errorText;
@@ -51,6 +52,7 @@ class InternationalPhoneInput extends StatefulWidget {
     this.showCountryFlags = true,
     this.dropdownIcon,
     this.border,
+    this.phoneTextController,
   });
 
   static Future<String?> internationalizeNumber(String number, String iso) {
@@ -86,8 +88,6 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
 
   _InternationalPhoneInputState();
 
-  final phoneTextController = TextEditingController();
-
   @override
   void initState() {
     errorText = widget.errorText ?? 'Please enter a valid phone number';
@@ -102,8 +102,8 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
     showCountryFlags = widget.showCountryFlags;
     dropdownIcon = widget.dropdownIcon;
 
-    phoneTextController.addListener(_validatePhoneNumber);
-    phoneTextController.text = widget.initialPhoneNumber ?? '';
+    widget.phoneTextController?.addListener(_validatePhoneNumber);
+    widget.phoneTextController?.text = widget.initialPhoneNumber ?? '';
 
     _fetchCountryData().then((list) {
       Country? preSelectedItem;
@@ -131,7 +131,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
   }
 
   _validatePhoneNumber() {
-    String phoneText = phoneTextController.text;
+    String phoneText = widget.phoneTextController?.text ?? "";
     if (phoneText.isNotEmpty && selectedItem != null) {
       PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!)
           .then((isValid) {
@@ -240,7 +240,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
           Flexible(
             child: TextField(
               keyboardType: TextInputType.phone,
-              controller: phoneTextController,
+              controller: widget.phoneTextController,
               inputFormatters: widget.inputFormatters,
               decoration: decoration ??
                   InputDecoration(
