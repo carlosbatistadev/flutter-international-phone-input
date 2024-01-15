@@ -244,15 +244,17 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
             ),
           ),
           Flexible(
-            child: TextField(
+            child: TextFormField(
+              autovalidateMode: AutovalidateMode.always,
               keyboardType: TextInputType.phone,
               controller: phoneTextController,
               inputFormatters: widget.inputFormatters,
+              validator: (value) => hasError ? errorText : null,
               decoration: decoration ??
                   InputDecoration(
                     hintText: hintText,
                     labelText: labelText,
-                    errorText: hasError ? errorText : null,
+                    // errorText: hasError ? errorText : null,
                     hintStyle: hintStyle ?? null,
                     errorStyle: errorStyle ?? null,
                     labelStyle: labelStyle,
