@@ -33,6 +33,7 @@ class InternationalPhoneInput extends StatefulWidget {
   final Widget? dropdownIcon;
   final InputBorder? border;
   final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String?)? validator;
 
   InternationalPhoneInput({
     this.onPhoneNumberChange,
@@ -53,6 +54,7 @@ class InternationalPhoneInput extends StatefulWidget {
     this.dropdownIcon,
     this.border,
     this.phoneTextController,
+    this.validator,
   });
 
   static Future<String?> internationalizeNumber(String number, String iso) {
@@ -238,15 +240,16 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
             ),
           ),
           Flexible(
-            child: TextField(
+            child: TextFormField(
+              autovalidateMode: AutovalidateMode.always,
               keyboardType: TextInputType.phone,
               controller: widget.phoneTextController,
               inputFormatters: widget.inputFormatters,
+              validator: widget.validator,
               decoration: decoration ??
                   InputDecoration(
                     hintText: hintText,
                     labelText: labelText,
-                    errorText: hasError ? errorText : null,
                     hintStyle: hintStyle ?? null,
                     errorStyle: errorStyle ?? null,
                     labelStyle: labelStyle,
