@@ -32,6 +32,7 @@ class InternationalPhoneInput extends StatefulWidget {
   final Widget? dropdownIcon;
   final InputBorder? border;
   final List<TextInputFormatter>? inputFormatters;
+  final FocusNode? focusNode;
 
   InternationalPhoneInput({
     this.onPhoneNumberChange,
@@ -51,6 +52,7 @@ class InternationalPhoneInput extends StatefulWidget {
     this.showCountryFlags = true,
     this.dropdownIcon,
     this.border,
+    this.focusNode,
   });
 
   static Future<String?> internationalizeNumber(String number, String iso) {
@@ -245,6 +247,7 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
           ),
           Flexible(
             child: TextFormField(
+              focusNode: widget.focusNode,
               autovalidateMode: AutovalidateMode.always,
               keyboardType: TextInputType.phone,
               controller: phoneTextController,
