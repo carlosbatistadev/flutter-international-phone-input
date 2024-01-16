@@ -34,6 +34,7 @@ class InternationalPhoneInput extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
   final TextEditingController? phoneTextController;
+  final bool isRequired;
 
   InternationalPhoneInput({
     this.onPhoneNumberChange,
@@ -55,6 +56,7 @@ class InternationalPhoneInput extends StatefulWidget {
     this.border,
     this.focusNode,
     this.phoneTextController,
+    this.isRequired = false,
   });
 
   static Future<String?> internationalizeNumber(String number, String iso) {
@@ -136,12 +138,14 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
 
   _validatePhoneNumber() {
     String phoneText = phoneTextController?.text ?? "";
-    
+
     if (phoneText.isNotEmpty && selectedItem != null) {
       PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!).then(
         (isValid) async {
           setState(() {
-            hasError = !isValid!;
+            hasError = widget.isRequired
+                ? !isValid!
+                : phoneText.isNotEmpty && !isValid!;
           });
 
           if (widget.onPhoneNumberChange != null) {
