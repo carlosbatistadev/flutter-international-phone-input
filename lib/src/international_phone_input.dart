@@ -139,13 +139,17 @@ class _InternationalPhoneInputState extends State<InternationalPhoneInput> {
   _validatePhoneNumber() {
     String phoneText = phoneTextController?.text ?? "";
 
+    if (!widget.isRequired && phoneText.isEmpty) {
+      hasError = false;
+      widget.onPhoneNumberChange!("", null, null, null);
+      return;
+    }
+
     if (phoneText.isNotEmpty && selectedItem != null) {
       PhoneService.parsePhoneNumber(phoneText, selectedItem!.code!).then(
         (isValid) async {
           setState(() {
-            hasError = widget.isRequired
-                ? !isValid!
-                : phoneText.isNotEmpty && !isValid!;
+            hasError = !isValid!;
           });
 
           if (widget.onPhoneNumberChange != null) {
