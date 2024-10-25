@@ -9,7 +9,7 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    libphonenumber: ^2.0.2
+    libphonenumber_plugin: ^0.3.3
 
 dev_dependencies:
     test: ^1.6.0
