@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:international_phone_input/src/country.dart';
-import 'package:libphonenumber/libphonenumber.dart';
+import 'package:libphonenumber_plugin/libphonenumber_plugin.dart';
 
 class PhoneService {
   static List<Country> getPotentialCountries(
@@ -51,8 +51,8 @@ class PhoneService {
   static Future<bool?> parsePhoneNumber(String number, String iso) async {
     try {
       bool? isValid = await PhoneNumberUtil.isValidPhoneNumber(
-        phoneNumber: number,
-        isoCode: iso,
+        number,
+        iso,
       );
       return isValid;
     } on PlatformException {
@@ -64,7 +64,9 @@ class PhoneService {
       String number, String iso) async {
     try {
       String? normalizedNumber = await PhoneNumberUtil.normalizePhoneNumber(
-          phoneNumber: number, isoCode: iso);
+        number,
+        iso,
+      );
 
       return normalizedNumber;
     } catch (e) {
